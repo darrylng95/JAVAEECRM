@@ -5,14 +5,10 @@
  */
 package manager;
 
-import entity.Contact;
 import entity.Customer;
-import entity.Field;
-import error.NoResultException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import session.CustomerSessionLocal;
 
 /**
