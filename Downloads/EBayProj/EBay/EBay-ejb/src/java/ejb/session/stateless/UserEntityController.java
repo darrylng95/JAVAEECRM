@@ -30,7 +30,6 @@ public class UserEntityController implements UserEntityControllerRemote, UserEnt
     
     @Override
     public void createUser (UserEntity user){
-        if(em.find(UserEntity.class, user.getUserId())== null)
         em.persist(user);
     }
     
@@ -48,6 +47,15 @@ public class UserEntityController implements UserEntityControllerRemote, UserEnt
             throw new NoResultException("Not Found");
         }
     }
+    
+    @Override 
+    public void deleteUser(UserEntity user) throws NoResultException{
+        if(em.find(UserEntity.class, user.getUserId())!= null){
+            em.remove(user);
+        }else {
+            throw new NoResultException("User Not Found");
+        }
+    }
    
     @Override
     public UserEntity retrieveUserByUsername (String username) throws NoResultException {
@@ -59,4 +67,19 @@ public class UserEntityController implements UserEntityControllerRemote, UserEnt
             throw new NoResultException("Not Found");
         }
     }
+    
+    @Override
+    public UserEntity userLogin(String username, String password)  throws InvalidLoginException{
+        try{
+            UserEntity user = retrieveUserByUsername(username);
+            if(user.getPassword().equals(password)){
+                return user;
+            }else{
+                throw new InvalidLoginException("Username or Password does not exist");
+            }
+        }catch (Exception ex){
+            throw new InvalidLoginException("Something went wrong in login");
+        }
+    }
+
 }
