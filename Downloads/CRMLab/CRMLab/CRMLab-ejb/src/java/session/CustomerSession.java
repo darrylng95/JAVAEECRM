@@ -24,20 +24,22 @@ import javax.persistence.Query;
  */
 @Stateless
 public class CustomerSession implements CustomerSessionLocal {
-    @PersistenceContext
+    @PersistenceContext(unitName="CRMLab-ejbPU")
     private EntityManager em;
 
-    @Override
+        @Override
     public List<Customer> searchCustomers(String name) {
         Query q;
-        if(name != null) {
-            q = em.createQuery("SELECT c from Customer c WHERE" + "LOWER(c.name) LIKE :name");
-            q.setParameter("name", "%" + name.toLowerCase()+"%");
-        }else {
-            q = em.createQuery("SELECT c from Customer c");
+        if (name != null) {
+            q = em.createQuery("SELECT c FROM Customer c WHERE "
+                    + "LOWER(c.name) LIKE :name");
+            q.setParameter("name", "%" + name.toLowerCase() + "%");
+        } else {
+            q = em.createQuery("SELECT c FROM Customer c");
         }
+
         return q.getResultList();
-    }
+    } //end searchCustomers
 
     @Override
     public Customer getCustomer(Long cId) throws NoResultException {
@@ -169,7 +171,7 @@ public class CustomerSession implements CustomerSessionLocal {
     public List<Customer> searchCustomersByContact(Contact c) {
         Query q;
         if( c.getPhone() != null){
-            q = em.createQuery("SELECT cust FROM Customer cust, Contact c WHERE c MEMBER OF cust.contacts AND LOWER(c.phone) LIKE: phone");
+            q = em.createQuery("SELECT cust FROM Customer cust, Contact c WHERE c MEMBER OF cust.contacts AND LOWER(c.phone) LIKE :phone");
             q.setParameter("phone", "%" +c.getPhone().toLowerCase() +"%");
         }else if(c.getEmail() !=null){
             q = em.createQuery("SELECT cust FROM Customer cust, Contact c WHERE c MEMBER OF cust.contacts AND LOWER(c.email) LIKE :email");
