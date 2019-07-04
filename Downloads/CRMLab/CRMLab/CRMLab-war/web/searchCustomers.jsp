@@ -20,7 +20,7 @@
                 </c:forEach>
             </select>
             <input type="text" name="searchValue" />
-            <input type="submit" value="Search" />
+            <input type="submit" value="Search" style="border:1px solid black;border-radius:12px;background-color:black; color:white "/>
         </form>
         <c:forEach var="customer" items="${customers}">
             <div style="border: 1px brown solid; padding: 10px;">
