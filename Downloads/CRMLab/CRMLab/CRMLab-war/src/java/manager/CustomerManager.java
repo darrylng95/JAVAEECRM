@@ -1,3 +1,4 @@
+// do not need if using JSF, primefaces
 package manager;
 
 import entity.Contact;
