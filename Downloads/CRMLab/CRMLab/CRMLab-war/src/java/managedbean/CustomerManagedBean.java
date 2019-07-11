@@ -6,15 +6,17 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.inject.Named;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import session.CustomerSessionLocal;
 
 @Named(value = "customerManagedBean")
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class CustomerManagedBean {
 
     @EJB
@@ -24,6 +26,10 @@ public class CustomerManagedBean {
     private byte gender;
     private Date dob;
     private List<Customer> customers;
+
+    //used by editCustomer.xhtml
+    private Long cId;
+    private Customer selectedCustomer;
 
     public CustomerManagedBean() {
     }
@@ -51,6 +57,36 @@ public class CustomerManagedBean {
 
         customerSessionLocal.createCustomer(c);
     }
+
+    public void loadSelectedCustomer() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            this.selectedCustomer
+                    = customerSessionLocal.getCustomer(cId);
+            name = this.selectedCustomer.getName();
+            gender = this.selectedCustomer.getGender();
+            dob = this.selectedCustomer.getDob();
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to load customer"));
+        }
+    } //end loadSelectedCustomer
+
+    public void updateCustomer(ActionEvent evt) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        selectedCustomer.setName(name);
+        selectedCustomer.setGender(gender);
+        selectedCustomer.setDob(dob);
+        try {
+            customerSessionLocal.updateCustomer(selectedCustomer);
+        } catch (Exception e) {
+//show with an error icon 
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to update customer")
+            );
+            return;
+        }
+//need to make sure reinitialize the customers collection
+        context.addMessage(null, new FacesMessage("Success", "Successfully updated customer"));
+    } //end updateCustomer
 
     //getters and setters
     public String getName() {
@@ -83,6 +119,22 @@ public class CustomerManagedBean {
 
     public void setCustomers(List<Customer> customers) {
         this.customers = customers;
+    }
+
+    public Long getcId() {
+        return cId;
+    }
+
+    public void setcId(Long cId) {
+        this.cId = cId;
+    }
+
+    public Customer getSelectedCustomer() {
+        return selectedCustomer;
+    }
+
+    public void setSelectedCustomer(Customer selectedCustomer) {
+        this.selectedCustomer = selectedCustomer;
     }
 
 }
