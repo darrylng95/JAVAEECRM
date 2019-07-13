@@ -4,6 +4,7 @@ package managedbean;
 import entity.Contact;
 import entity.Customer;
 import entity.Field;
+import error.NoResultException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,12 @@ public class CustomerManagedBean {
     //used by editCustomer.xhtml
     private Long cId;
     private Customer selectedCustomer;
-    
+
     private String fieldName;
     private String fieldValue;
     private String contactType = "PHONE";
     private String contactValue;
-    
+
     private String searchType = "NAME";
     private String searchString;
     private Set<String> allFields;
@@ -81,8 +82,6 @@ public class CustomerManagedBean {
     }
 
     //methods
-    
-    
     public void addCustomer(ActionEvent evt) {
         /*  SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -100,7 +99,7 @@ public class CustomerManagedBean {
 
         customerSessionLocal.createCustomer(c);
     }
-    
+
     public void searchTypeHandler() {
         //do nothing, just to force an explicit update of searchType
     } //end searchTypeHandler
@@ -157,9 +156,9 @@ public class CustomerManagedBean {
         context.addMessage(null, new FacesMessage("Success", "Successfully deleted customer"));
         init();
     }//end delete customer
-
     public void deleteField(Long cId, Long fId) {
         FacesContext context = FacesContext.getCurrentInstance();
+
         try {
             customerSessionLocal.deleteField(cId, fId);
             this.selectedCustomer = customerSessionLocal.getCustomer(cId);
@@ -170,56 +169,54 @@ public class CustomerManagedBean {
 
     public void deleteContact(Long cId) {
         FacesContext context = FacesContext.getCurrentInstance();
+
         try {
             customerSessionLocal.deleteContact(cId);
-            this.selectedCustomer
-                    = customerSessionLocal.getCustomer(this.selectedCustomer.getId());
-        } catch (Exception e) {
-          context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to delete contact"));
+            this.selectedCustomer = customerSessionLocal.getCustomer(this.selectedCustomer.getId());
+        } catch (NoResultException e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to delete contact"));
         }
-    } // end of delete Contact
-    
-    public void addField(){
+    }
+    public void addField() {
         FacesContext context = FacesContext.getCurrentInstance();
         Field f = new Field();
         f.setName(this.fieldName);
         f.setFieldValue(this.fieldValue);
-        
-        try{
+
+        try {
             customerSessionLocal.addField(this.selectedCustomer.getId(), f);
             this.selectedCustomer = customerSessionLocal.getCustomer(this.selectedCustomer.getId());
             //reset values
             this.fieldName = "";
             this.fieldValue = "";
-        }catch(Exception e){
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error","Unable to add field"));
-        }      
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to add field"));
+        }
     }
-    
-    public void addContact(){
+
+    public void addContact() {
         FacesContext context = FacesContext.getCurrentInstance();
-        
-        Contact c = new Contact ();
-        
-        if(this.contactType.equals("PHONE")){
+
+        Contact c = new Contact();
+
+        if (this.contactType.equals("PHONE")) {
             c.setPhone(this.contactValue);
-        }else if(this.contactType.equals("EMAIL")){
+        } else if (this.contactType.equals("EMAIL")) {
             c.setEmail(this.contactValue);
         }
-        
-        try{
+
+        try {
             customerSessionLocal.addContact(this.selectedCustomer.getId(), c);
             this.selectedCustomer = customerSessionLocal.getCustomer(this.selectedCustomer.getId());
             //reset values
-            this.contactType="PHONE";
-            this.contactValue="";          
-        }catch(Exception e){
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error","Unable to add contact"));
+            this.contactType = "PHONE";
+            this.contactValue = "";
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to add contact"));
         }//end addContact
     }
 
     //getters and setters
- 
     /**
      * @return the name
      */

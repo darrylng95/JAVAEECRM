@@ -16,7 +16,7 @@
             <p:growl id ="growl" showDetail="true" sticky="true"/>
             Search Customers
 
-       <p:dataTable widgetVar="customersTable" 
+            <p:dataTable widgetVar="customersTable" 
                          var="customer" 
                          value="#{customerManagedBean.customers}" 
                          resizableColumns="true"
@@ -38,7 +38,7 @@
                         </p:inputText>
                     </p:outputPanel>
                 </f:facet>
-                
+
                 <p:column headerText="Id">
                     <h:outputText value="#{customer.id}"/>
                 </p:column>
@@ -98,44 +98,34 @@
                         </h:outputText>
                         <h:outputText value="Created"/>
                         <h:outputText value="#{customerManagedBean.selectedCustomer.created}"/>
-   <c:forEach var="field"
-                                   items="#{customerManagedBean.selectedCustomer.fields}">
-                            <h:outputText style="text-transform: capitalize"
-                                          value="#{field.name}"/>
+                        <c:forEach var="field" items="#{customerManagedBean.selectedCustomer.fields}">
+                            <h:outputText style="text-transform: capitalize" value="#{field.name}" />
                             <h:panelGroup>
-                                <h:outputText style="text-transform: capitalize"
-                                              value="#{field.fieldValue}"/>&nbsp;
-                                <p:commandLink style="font-size: small"
-                                               update=":form:customerDetails"
-                                               action="#{customerManagedBean.deleteField(customerManagedBean.selectedCustomer.id, field.id)}"
-                                               title="Delete">
+                                <h:outputText style="text-transform: capitalize" value="#{field.fieldValue}" /> &nbsp;
+                                <p:commandLink style="font-size: small" update=":form:customerDetails" action="#{customerManagedBean.deleteField(customerManagedBean.selectedCustomer.id, field.id)}" title="Delete">
                                     <h:outputText value="(delete)"/>
-                                </p:commandLink>                                    
+                                </p:commandLink>
                             </h:panelGroup>
                         </c:forEach>
 
-                        <c:forEach var="contact"
-                                   items="#{customerManagedBean.selectedCustomer.contacts}">
-                            <c:if test="${contact.phone != null}">
-                                <h:outputText value="Tel"/>
+                        <c:forEach var="contact" items="#{customerManagedBean.selectedCustomer.contacts}">
+                            <c:if test ="${contact.phone != null}">
+                                <h:outputText value="Tel" />
                                 <h:panelGroup>
-                                    <h:outputText value="#{contact.phone}"/> &nbsp;
-                                    <p:commandLink style="font-size: small"
-                                                   update=":form:customerDetails"
-                                                   action="#{customerManagedBean.deleteContact(contact.id)}"
-                                                   title="Delete">
+                                    <h:outputText value="#{contact.phone}" /> &nbsp;
+                                    <p:commandLink style="font-size: small" update=":form:customerDetails" action="#{customerManagedBean.deleteContact(contact.id)}" title="Delete">
                                         <h:outputText value="(delete)"/>
                                     </p:commandLink>
                                 </h:panelGroup>
-                            </c:if>
 
-                            <c:if test="${contact.email != null}">
-                                <h:outputText value="Email: "/>
+                            </c:if>
+                            <c:if test ="${contact.email != null}">
+                                <h:outputText value="Email:" />
                                 <h:panelGroup>
-                                    <h:outputText value="#{contact.email}"/> &nbsp;
-                                    <p:commandLink style="font-size: small"
-                                                   update=":form:customerDetails"
-                                                   action="#{customerManagedBean.deleteContact(contact.id)}"
+                                    <h:outputText value="#{contact.email}" /> &nbsp;
+                                    <p:commandLink style="font-size: small" 
+                                                   update=":form:customerDetails" 
+                                                   action="#{customerManagedBean.deleteContact(contact.id)}" 
                                                    title="Delete">
                                         <h:outputText value="(delete)"/>
                                     </p:commandLink>
@@ -173,12 +163,12 @@
                                          required="#{not empty param['form:addContact']}"
                                          requiredMessage="Value is required" /> 
                             <p:commandButton id="addContact" value="Add"
-                                         action="#{customerManagedBean.addContact}" 
-                                         update=":form:customerDetails" />
+                                             action="#{customerManagedBean.addContact}" 
+                                             update=":form:customerDetails" />
                             <p:message for="contactvalue" /> 
                         </h:panelGroup>
 
-                     
+
                     </p:panelGrid>
                 </p:outputPanel>
             </p:dialog>
