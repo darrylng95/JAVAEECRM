@@ -88,25 +88,46 @@ public class CustomerManagedBean {
 //need to make sure reinitialize the customers collection
         context.addMessage(null, new FacesMessage("Success", "Successfully updated customer"));
     } //end updateCustomer
-    
+
     public void deleteCustomer() {
         FacesContext context = FacesContext.getCurrentInstance();
-        
+
         Map<String, String> params = context.getExternalContext().getRequestParameterMap();
         String cIdStr = params.get("cId");
         Long cId = Long.parseLong(cIdStr);
-        
-        try{
+
+        try {
             customerSessionLocal.deleteCustomer(cId);
-        }catch (Exception e){
+        } catch (Exception e) {
             //show with error logo
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error","Unable to delete customer"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to delete customer"));
             return;
         }
-        
-        context.addMessage(null, new FacesMessage("Success","Successfully deleted customer"));
+
+        context.addMessage(null, new FacesMessage("Success", "Successfully deleted customer"));
         init();
     }//end delete customer
+
+    public void deleteField(Long cId, Long fId) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            customerSessionLocal.deleteField(cId, fId);
+            this.selectedCustomer = customerSessionLocal.getCustomer(cId);
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to delete field"));
+        }
+    }
+
+    public void deleteContact(Long cId) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            customerSessionLocal.deleteContact(cId);
+            this.selectedCustomer
+                    = customerSessionLocal.getCustomer(this.selectedCustomer.getId());
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to delete contact"));
+        }
+    }
 
     //getters and setters
     public String getName() {

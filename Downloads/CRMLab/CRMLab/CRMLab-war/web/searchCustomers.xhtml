@@ -4,7 +4,8 @@
                 template="./layout/default.xhtml"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="title">
         Search Customers
@@ -40,9 +41,10 @@
                 </p:column>
 
                 <p:column>
-                    <p:commandButton icon="fa fa-fw fa-search">
+                    <p:commandButton icon="fa fa-fw fa-search" update=":form:customerDetails" oncomplete="PF('customerDialog').show()" title="View">
+                        <f:setPropertyActionListener value="#{customer}" target="#{customerManagedBean.selectedCustomer}" />
 
-                    </p:commandButton>
+                    </p:commandButton>              
                     <p:button icon="fa fa-fw fa-edit" title="Edit" outcome="editCustomer">
                         <f:param name="cId" value="#{customer.id}"/>
                     </p:button>
@@ -52,10 +54,34 @@
                                      title="Delete">
                         <f:param name="cId" value ="#{customer.id}"/>
                     </p:commandButton>
-
-
                 </p:column>
             </p:dataTable>
+            
+            <!-- outputPanel id "<p:outputPanel id="customerDetails"> must match search update id "update=":form:customerDetails"" -->
+            <p:dialog header="Customer Details" widgetVar="customerDialog"
+                      modal="false" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="customerDetails">
+                    <p:panelGrid columns="2" rendered="#{not empty customerManagedBean.selectedCustomer}">
+                        <h:outputText value="Id"/>
+                        <h:outputText value="#{customerManagedBean.selectedCustomer.id}"/>
+                        <h:outputText value ="Name"/>
+                        <h:outputText value="#{customerManagedBean.selectedCustomer.name}"/>
+                        <h:outputText value="Gender"/>
+                        <h:outputText value="Female"
+                                      rendered="#{customerManagedBean.selectedCustomer.gender =='1'}"
+                                      />
+                        <h:outputText value="Male" rendered="#{customerManagedBean.selectedCustomer.gender == '2'}"/>
+                        <h:outputText value="DOB"/>
+                        <h:outputText value="#{customerManagedBean.selectedCustomer.dob}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                        <h:outputText value="Created"/>
+                        <h:outputText value="#{customerManagedBean.selectedCustomer.created}"/>
+         
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+
         </h:form>
     </ui:define>
 
